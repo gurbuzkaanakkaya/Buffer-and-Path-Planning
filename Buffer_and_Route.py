@@ -222,13 +222,9 @@ if __name__ == '__main__':
 
 
     shapely_polygon_list             = shapely_polygon(vertices_list)
-    start_time = time.time()
     linestring_list                = create_linestring(vertices_list_t)
-
     intersection(shapely_polygon_list, vertices_list_t, linestring_list)
-    end_time = time.time()
-    execution_time = end_time - start_time
-
+    
     graph = create_graph_from_matrix(weight_matrix)
     path = shortest_path(graph, 0, 1)
     pd_path_coord = []
@@ -247,5 +243,4 @@ if __name__ == '__main__':
     data[data.geometry.type == 'LineString'].plot(ax=ax, color='red')
     data[data.geometry.type == 'Point'].plot(ax=ax, color='green')
     plt.show()
-    print(f"{len(shapely_polygon_list)} poligon  {len(vertices_list_t)} noktada fonksiyonun çalışma süresi {execution_time}:")
     #show_matrix(weight_matrix, max_width)
