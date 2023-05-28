@@ -33,6 +33,5 @@
 
 • We visualize the results.
 
-• Finally, we print the execution time and the matrix on the screen
 
 ![Result](https://github.com/gurbuzkaanakkaya/Buffer_and_Route/assets/103320421/0e21ffcc-0edf-4e77-81bc-d57eb19374ca)
