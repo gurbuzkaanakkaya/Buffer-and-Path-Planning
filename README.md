@@ -3,7 +3,7 @@
 
 • The create_matrix function creates a weight matrix based on a list of coordinates. It determines the dimensions of the matrix and the maximum element width.
 
-• The create_graph_from_matrix function creates a graph from the weight matrix. The nodes in the graph correspond to the indices in the matrix, and the edges have the values from the weight matrix.
+• The create_graph_from_matrix function creates a graph from the weight matrix. The nodes in the graph correspond to the indices in the matrix, and the edges have the values from the         weight matrix.
 
 • The shortest_path function calculates the shortest path on the given graph. It uses the Dijkstra algorithm.
 
