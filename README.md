@@ -27,7 +27,7 @@
 
 • Shapely polygons are created, and the line list is generated.
 
-• Intersection calculations are performed, and the execution time is measured.
+• Intersection calculations are performed.
 
 • We create the graph and calculate the shortest path.
 
