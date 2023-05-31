@@ -148,7 +148,7 @@ def create_linestring(all_vertices):
     return list_of_line
 
 
-def process_line(shapely_poly_list, all_vertices, linestring_wkt):
+def intersection(shapely_poly_list, all_vertices, linestring_wkt):
     inf_value = 99999999
     for line_str, wkt_index in linestring_wkt.items():
         line = wkt.loads(line_str)
@@ -189,14 +189,14 @@ def process_line(shapely_poly_list, all_vertices, linestring_wkt):
                 weight_matrix[wkt_index[1]][wkt_index[0]] = inf_value
                 break
 
-def intersection(shapely_poly_list, all_vertices, linestring_wkt):
+def process_line(shapely_poly_list, all_vertices, linestring_wkt):
     half_length = len(linestring_wkt) // 2
     first_half = dict(list(linestring_wkt.items())[:half_length])
     second_half = dict(list(linestring_wkt.items())[half_length:])
 
     with ThreadPoolExecutor() as executor:
-        executor.submit(process_line, shapely_poly_list, all_vertices, first_half)
-        executor.submit(process_line, shapely_poly_list, all_vertices, second_half)
+        executor.submit(intersection, shapely_poly_list, all_vertices, first_half)
+        executor.submit(intersection, shapely_poly_list, all_vertices, second_half)
 
 if __name__ == '__main__':
     coordinate_list = []
@@ -228,7 +228,7 @@ if __name__ == '__main__':
 
     shapely_polygon_list             = shapely_polygon(vertices_list)
     linestring_list                  = create_linestring(vertices_list_t)
-    intersection(shapely_polygon_list, vertices_list_t, linestring_list)
+    process_line(shapely_polygon_list, vertices_list_t, linestring_list)
     
     graph = create_graph_from_matrix(weight_matrix)
     path = shortest_path(graph, 0, 1)
