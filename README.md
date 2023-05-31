@@ -14,7 +14,9 @@
 • The haversine_distance function calculates the haversine distance between two points.
 
 • The buffered_point function creates new points by buffering each corner of the polygon.
+
 ![BUFF](https://github.com/gurbuzkaanakkaya/Buffer_and_Route/assets/103320421/e764cb84-96a7-404d-9629-df002f15e993)
+
 • The shapely_polygon function creates a Shapely polygon object from the given polygon.
 
 • The create_linestring function generates all possible line combinations of the points and stores them in a dictionary.
