@@ -15,8 +15,7 @@
 
 • The buffered_point function creates new points by buffering each corner of the polygon.
 
-![BUFF](https://github.com/gurbuzkaanakkaya/Buffer_and_Route/assets/103320421/bcf62727-dffc-47eb-80f8-ac0845fa3858)
-
+![5967136a-b4a4-40f4-a973-f6fd40729838](https://github.com/gurbuzkaanakkaya/Buffer_and_Route/assets/103320421/5b7c1658-c56d-4f39-9d6d-4065669e7130)
 
 • The shapely_polygon function creates a Shapely polygon object from the given polygon.
 
