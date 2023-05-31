@@ -233,11 +233,11 @@ if __name__ == '__main__':
 
     line = LineString(pd_path_coord)
 
-    start_end_point = []
-    start_end_point.append(Point(vertices_list_t[0]))
-    start_end_point.append(Point(vertices_list_t[1]))
+    start_target_point = []
+    start_target_point.append(Point(vertices_list_t[0]))
+    start_target_point.append(Point(vertices_list_t[1]))
 
-    data = gpd.GeoDataFrame(geometry=[polygon for polygon in shapely_polygon_list] + [line] + [point for point in start_end_point])
+    data = gpd.GeoDataFrame(geometry=[polygon for polygon in shapely_polygon_list] + [line] + [point for point in start_target_point])
     fig, ax = plt.subplots()
     data[data.geometry.type == 'Polygon'].plot(ax=ax, color='lightblue', edgecolor='black')
     data[data.geometry.type == 'LineString'].plot(ax=ax, color='red')
