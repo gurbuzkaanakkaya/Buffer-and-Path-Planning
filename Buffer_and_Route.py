@@ -5,6 +5,7 @@ import sys
 from shapely import wkt
 import networkx as nx
 from shapely.geometry import Polygon, Point, LineString, MultiPoint
+from concurrent.futures import ThreadPoolExecutor
 import geopandas as gpd
 import matplotlib.pyplot as plt
 
@@ -146,12 +147,11 @@ def create_linestring(all_vertices):
 
     return list_of_line
 
-def intersection(shapely_poly_list, all_vertices, linestring_wkt):
+
+def process_line(shapely_poly_list, all_vertices, linestring_wkt):
     inf_value = 99999999
-    print(len(linestring_wkt))
     for line_str, wkt_index in linestring_wkt.items():
         line = wkt.loads(line_str)
-
         for polygon in shapely_poly_list:
             intersect = polygon.intersection(line)
 
@@ -162,9 +162,7 @@ def intersection(shapely_poly_list, all_vertices, linestring_wkt):
                                                  all_vertices[int(wkt_index[1])][1])
 
                 weight_matrix[wkt_index[0]][wkt_index[1]] = dist_points
-
                 weight_matrix[wkt_index[1]][wkt_index[0]] = dist_points
-
 
             elif isinstance(intersect, LineString):
                 center_x = (intersect.coords[0][0] + intersect.coords[1][0]) / 2
@@ -178,7 +176,6 @@ def intersection(shapely_poly_list, all_vertices, linestring_wkt):
                                                      all_vertices[int(wkt_index[1])][1])
 
                     weight_matrix[wkt_index[0]][wkt_index[1]] = dist_points
-
                     weight_matrix[wkt_index[1]][wkt_index[0]] = dist_points
                     break
 
@@ -191,6 +188,15 @@ def intersection(shapely_poly_list, all_vertices, linestring_wkt):
                 weight_matrix[wkt_index[0]][wkt_index[1]] = inf_value
                 weight_matrix[wkt_index[1]][wkt_index[0]] = inf_value
                 break
+
+def intersection(shapely_poly_list, all_vertices, linestring_wkt):
+    half_length = len(linestring_wkt) // 2
+    first_half = dict(list(linestring_wkt.items())[:half_length])
+    second_half = dict(list(linestring_wkt.items())[half_length:])
+
+    with ThreadPoolExecutor() as executor:
+        executor.submit(process_line, shapely_poly_list, all_vertices, first_half)
+        executor.submit(process_line, shapely_poly_list, all_vertices, second_half)
 
 if __name__ == '__main__':
     coordinate_list = []
@@ -220,9 +226,8 @@ if __name__ == '__main__':
     vertices_list_t.insert(0, coordinate_list[0])
     vertices_list_t.insert(1, coordinate_list[1])
 
-
     shapely_polygon_list             = shapely_polygon(vertices_list)
-    linestring_list                = create_linestring(vertices_list_t)
+    linestring_list                  = create_linestring(vertices_list_t)
     intersection(shapely_polygon_list, vertices_list_t, linestring_list)
     
     graph = create_graph_from_matrix(weight_matrix)
@@ -243,4 +248,5 @@ if __name__ == '__main__':
     data[data.geometry.type == 'LineString'].plot(ax=ax, color='red')
     data[data.geometry.type == 'Point'].plot(ax=ax, color='green')
     plt.show()
+    print(f"{len(shapely_polygon_list)} poligon  {len(vertices_list_t)} noktada fonksiyonun çalışma süresi {execution_time}:")
     #show_matrix(weight_matrix, max_width)
