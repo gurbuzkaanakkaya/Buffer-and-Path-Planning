@@ -238,9 +238,7 @@ if __name__ == '__main__':
 
     line = LineString(pd_path_coord)
 
-    start_target_point = []
-    start_target_point.append(Point(vertices_list_t[0]))
-    start_target_point.append(Point(vertices_list_t[1]))
+    start_target_point = [Point(vertices_list_t[0]), Point(vertices_list_t[1])]
 
     data = gpd.GeoDataFrame(geometry=[polygon for polygon in shapely_polygon_list] + [line] + [point for point in start_target_point])
     fig, ax = plt.subplots()
