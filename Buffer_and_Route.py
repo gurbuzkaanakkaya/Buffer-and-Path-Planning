@@ -88,24 +88,29 @@ def buffered_point(poly_list, distance = 100):
             control_vertices.append((poly[index][0]                         , poly[index][1]))
             control_vertices.append((poly[(index + 1) % size_of_list][0]    , poly[(index + 1) % size_of_list][1]))
 
-            first_x_dist             = poly[index][0]                       - poly[index - 1][0]
-            first_y_dist             = poly[index][1]                       - poly[index - 1][1]
+            first_second_vertex_distance  = haversine_distance(poly[index][0],
+                                            poly[index][1],
+                                            poly[index - 1][0],
+                                            poly[index - 1][1])
+            second__third_vertex_distance = haversine_distance(poly[index][0],
+                                                          poly[index][1],
+                                                          poly[(index + 1) % size_of_list][0],
+                                                          poly[(index + 1) % size_of_list][1])
 
-            second_x_dist            = poly[index][0]                       - poly[(index + 1) % size_of_list][0]
-            second_y_dist            = poly[index][1]                       - poly[(index + 1) % size_of_list][1]
+            third_first_x_dist            = poly[(index + 1) % size_of_list][0] - poly[index - 1][0]
+            third_first_y_dist            = poly[(index + 1) % size_of_list][1] - poly[index - 1][1]
 
-            third_x_dist             = poly[(index + 1) % size_of_list][0]  - poly[index - 1][0]
-            third_y_dist             = poly[(index + 1) % size_of_list][1]  - poly[index - 1][1]
+            total_rate                    = first_second_vertex_distance        + second__third_vertex_distance
 
-            first_distance           = math.sqrt(math.pow(first_x_dist,  2) + math.pow(first_y_dist, 2))
-            second_distance          = math.sqrt(math.pow(second_x_dist, 2) + math.pow(second_y_dist, 2))
+            point_of_bisector_x           = poly[index - 1][0]                  + ((third_first_x_dist / total_rate) *
+                                                                                    first_second_vertex_distance)
+            point_of_bisector_y           = poly[index - 1][1]                  + ((third_first_y_dist / total_rate) *
+                                                                                    first_second_vertex_distance)
 
-            total_rate               = first_distance + second_distance
-            point_of_bisector_x      = poly[index - 1][0]                   + ((third_x_dist / total_rate) * first_distance)
-            point_of_bisector_y      = poly[index - 1][1]                   + ((third_y_dist / total_rate) * first_distance)
-
-            bisector_distance_vertex = haversine_distance(poly[index][0], poly[index][1],
-                                       point_of_bisector_x, point_of_bisector_y)
+            bisector_distance_vertex = haversine_distance(poly[index][0],
+                                                          poly[index][1],
+                                                          point_of_bisector_x,
+                                                          point_of_bisector_y)
 
             if not is_vertex_convex(control_vertices, 1):
                 new_point_x = poly[index][0] + (poly[index][0] -
