@@ -246,5 +246,5 @@ if __name__ == '__main__':
     data[data.geometry.type == 'LineString'].plot(ax=ax, color='red')
     data[data.geometry.type == 'Point'].plot(ax=ax, color='green')
     plt.show()
-    print(f"{len(shapely_polygon_list)} poligon  {len(vertices_list_t)} noktada fonksiyonun çalışma süresi {execution_time}:")
+    #print(f"{len(shapely_polygon_list)} poligon  {len(vertices_list_t)} nokta")
     #show_matrix(weight_matrix, max_width)
