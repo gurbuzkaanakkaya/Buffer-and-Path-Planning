@@ -89,13 +89,13 @@ def buffered_point(poly_list, distance = 100):
             control_vertices.append((poly[(index + 1) % size_of_list][0]    , poly[(index + 1) % size_of_list][1]))
 
             first_second_vertex_distance  = haversine_distance(poly[index][0],
-                                            poly[index][1],
-                                            poly[index - 1][0],
-                                            poly[index - 1][1])
+                                                               poly[index][1],
+                                                               poly[index - 1][0],
+                                                               poly[index - 1][1])
             second__third_vertex_distance = haversine_distance(poly[index][0],
-                                                          poly[index][1],
-                                                          poly[(index + 1) % size_of_list][0],
-                                                          poly[(index + 1) % size_of_list][1])
+                                                               poly[index][1],
+                                                               poly[(index + 1) % size_of_list][0],
+                                                               poly[(index + 1) % size_of_list][1])
 
             third_first_x_dist            = poly[(index + 1) % size_of_list][0] - poly[index - 1][0]
             third_first_y_dist            = poly[(index + 1) % size_of_list][1] - poly[index - 1][1]
