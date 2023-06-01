@@ -35,5 +35,4 @@
 
 • We visualize the results.
 
-
-![Result](https://github.com/gurbuzkaanakkaya/Buffer_and_Route/assets/103320421/0e21ffcc-0edf-4e77-81bc-d57eb19374ca)
+![RESULT](https://github.com/gurbuzkaanakkaya/Buffer_and_Route/assets/103320421/1dcecbcf-1d90-43a5-a14d-a186f8445997)
