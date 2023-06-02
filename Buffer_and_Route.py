@@ -106,7 +106,11 @@ def buffered_point(poly_list, distance = 100):
                                                                                     first_second_vertex_distance)
             point_of_bisector_y           = poly[index - 1][1]                  + ((third_first_y_dist / total_rate) *
                                                                                     first_second_vertex_distance)
-
+            
+            if (point_of_bisector_x, point_of_bisector_y) == (poly[index][0], poly[index][1]):
+                new_point_x = poly[index][0] + 0.000000000000001
+                poly[index] = (new_point_x, poly[index][1])
+                
             bisector_distance_vertex = haversine_distance(poly[index][0],
                                                           poly[index][1],
                                                           point_of_bisector_x,
