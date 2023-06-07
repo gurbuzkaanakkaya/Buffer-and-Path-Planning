@@ -172,13 +172,9 @@ def intersection(shapely_poly_list, all_vertices, linestring_wkt):
 
                 weight_matrix[wkt_index[0]][wkt_index[1]] = dist_points
                 weight_matrix[wkt_index[1]][wkt_index[0]] = dist_points
-
+                
             elif isinstance(intersect, LineString):
-                center_x = (intersect.coords[0][0] + intersect.coords[1][0]) / 2
-                center_y = (intersect.coords[0][1] + intersect.coords[1][1]) / 2
-                distance = polygon.boundary.distance(Point(center_x, center_y))
-
-                if distance == 0:
+                if wkt_index[0] + 1 == wkt_index[1]:
                     dist_points = haversine_distance(all_vertices[int(wkt_index[0])][0],
                                                      all_vertices[int(wkt_index[0])][1],
                                                      all_vertices[int(wkt_index[1])][0],
@@ -192,6 +188,28 @@ def intersection(shapely_poly_list, all_vertices, linestring_wkt):
                     weight_matrix[wkt_index[0]][wkt_index[1]] = inf_value
                     weight_matrix[wkt_index[1]][wkt_index[0]] = inf_value
                     break
+                    
+            #   Alternatif Çözüm   #
+            
+            #elif isinstance(intersect, LineString):
+            #    center_x = (intersect.coords[0][0] + intersect.coords[1][0]) / 2
+            #    center_y = (intersect.coords[0][1] + intersect.coords[1][1]) / 2
+            #    distance = polygon.boundary.distance(Point(center_x, center_y))
+
+            #    if distance == 0:
+            #        dist_points = haversine_distance(all_vertices[int(wkt_index[0])][0],
+            #                                         all_vertices[int(wkt_index[0])][1],
+            #                                         all_vertices[int(wkt_index[1])][0],
+            #                                         all_vertices[int(wkt_index[1])][1])
+
+            #        weight_matrix[wkt_index[0]][wkt_index[1]] = dist_points
+            #        weight_matrix[wkt_index[1]][wkt_index[0]] = dist_points
+            #        break
+
+            #    else:
+            #        weight_matrix[wkt_index[0]][wkt_index[1]] = inf_value
+            #        weight_matrix[wkt_index[1]][wkt_index[0]] = inf_value
+            #        break
 
             else:
                 weight_matrix[wkt_index[0]][wkt_index[1]] = inf_value
