@@ -248,8 +248,8 @@ if __name__ == '__main__':
             else:
                 temp_list.append((x_coordinate, y_coordinate))
 
-    weight_matrix, max_width       = create_matrix(coordinate_list)
-    vertices_list, vertices_list_t = buffered_point(polygon_list)
+    weight_matrix, max_width         = create_matrix(coordinate_list)
+    vertices_list, vertices_list_t   = buffered_point(polygon_list)
     vertices_list_t.insert(0, coordinate_list[0])
     vertices_list_t.insert(1, coordinate_list[1])
 
