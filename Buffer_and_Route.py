@@ -21,6 +21,7 @@ def create_matrix(coordinates):
            matrix (numpy array): Matrix representation of the coordinates.
            max_element_width (int): Width of the maximum element in the matrix.
     """
+    
     row_count         = len(coordinates)
     column_count      = len(coordinates)
     matrix            = np.array([[0 for _ in range(column_count)] for _ in range(row_count)])
@@ -39,6 +40,7 @@ def create_graph_from_matrix(matrix):
         Returns:
             graph: A NetworkX graph object with nodes and weighted edges.
     """
+    
     num_vertices = len(matrix)
     graph = nx.Graph()
     graph.add_nodes_from(range(num_vertices))
@@ -65,6 +67,7 @@ def shortest_path(graph, source, target):
         Returns:
             path: A list representing the shortest path from the source to the target.
     """
+    
     path = nx.dijkstra_path(graph, source, target)
 
     return path
@@ -89,6 +92,7 @@ def is_vertex_convex(vertices, vertex_index):
         Returns:
             is_convex (bool): True if the vertex is convex, False otherwise.
     """
+    
     size_of_list = len(vertices)
 
     previous_index = (vertex_index - 1) % size_of_list
@@ -223,6 +227,7 @@ def shapely_polygon(vertices):
         Returns:
             poly_list (list): A list containing the polygons, where each polygon is represented using Shapely's Polygon class.
     """
+    
     poly_list = []
     for poly in vertices:
         poly_list.append(Polygon(poly))
