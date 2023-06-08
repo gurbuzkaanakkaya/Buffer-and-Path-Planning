@@ -117,7 +117,7 @@ def haversine_distance(latitude1, longitude1, latitude2, longitude2):
 
         Returns:
             distance (float): Haversine distance between the two points in meters.
-        """
+    """
 
     earth_radius = 6371000
 
@@ -150,7 +150,7 @@ def buffered_point(poly_list, distance=100):
        Returns:
            buff_vertices_l (list): List of polygons with buffered points, where each polygon is represented as a list of vertices.
            buff_vertices_t (list): List of buffered points, where each point is represented as a tuple (x, y).
-       """
+    """
 
     buff_vertices_l = []
     buff_vertices_t = []
