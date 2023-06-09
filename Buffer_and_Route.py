@@ -1,13 +1,15 @@
+import sys
 import math
 import time
 import numpy as np
-import sys
-from shapely import wkt
 import networkx as nx
-from shapely.geometry import Polygon, Point, LineString, MultiPoint
-from concurrent.futures import ThreadPoolExecutor
 import geopandas as gpd
 import matplotlib.pyplot as plt
+from shapely import wkt
+from shapely.geometry import Polygon, Point, LineString, MultiPoint
+from concurrent.futures import ThreadPoolExecutor
+
+
 
 def create_matrix(coordinates):
 
