@@ -344,7 +344,7 @@ def process_line(shapely_poly_list, all_vertices, linestring_wkt):
 
        Returns:
            None
-       """
+    """
 
     half_length = len(linestring_wkt) // 2
     first_half = dict(list(linestring_wkt.items())[:half_length])
