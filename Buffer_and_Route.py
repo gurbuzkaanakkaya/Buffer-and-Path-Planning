@@ -52,7 +52,6 @@ def create_graph_from_matrix(matrix):
 
     return graph
 
-
 def shortest_path(graph, source, target):
 
     """
@@ -70,7 +69,6 @@ def shortest_path(graph, source, target):
     path = nx.dijkstra_path(graph, source, target)
 
     return path
-
 
 def show_matrix(matrix, element_with):
 
@@ -106,7 +104,6 @@ def is_vertex_convex(vertices, vertex_index):
 
     return cross_product > 0
 
-
 def haversine_distance(latitude1, longitude1, latitude2, longitude2):
 
     """
@@ -140,7 +137,6 @@ def haversine_distance(latitude1, longitude1, latitude2, longitude2):
     distance = earth_radius * total_angle_of_the_circular_arc
     return distance
 
-
 def buffered_point(poly_list, distance=100):
 
     """
@@ -167,24 +163,24 @@ def buffered_point(poly_list, distance=100):
             control_vertices.append((poly[index][0], poly[index][1]))
             control_vertices.append((poly[(index + 1) % size_of_list][0], poly[(index + 1) % size_of_list][1]))
 
-            first_second_vertex_distance = haversine_distance(poly[index][0],
-                                                              poly[index][1],
-                                                              poly[index - 1][0],
-                                                              poly[index - 1][1])
+            first_second_vertex_distance  = haversine_distance(poly[index][0],
+                                                               poly[index][1],
+                                                               poly[index - 1][0],
+                                                               poly[index - 1][1])
             second__third_vertex_distance = haversine_distance(poly[index][0],
                                                                poly[index][1],
                                                                poly[(index + 1) % size_of_list][0],
                                                                poly[(index + 1) % size_of_list][1])
 
-            third_first_x_dist = poly[(index + 1) % size_of_list][0] - poly[index - 1][0]
-            third_first_y_dist = poly[(index + 1) % size_of_list][1] - poly[index - 1][1]
+            third_first_x_dist  = poly[(index + 1) % size_of_list][0] - poly[index - 1][0]
+            third_first_y_dist  = poly[(index + 1) % size_of_list][1] - poly[index - 1][1]
 
-            total_rate = first_second_vertex_distance + second__third_vertex_distance
-
-            point_of_bisector_x = poly[index - 1][0] + ((third_first_x_dist / total_rate) *
-                                                        first_second_vertex_distance)
-            point_of_bisector_y = poly[index - 1][1] + ((third_first_y_dist / total_rate) *
-                                                        first_second_vertex_distance)
+            total_rate          = first_second_vertex_distance        + second__third_vertex_distance
+       
+            point_of_bisector_x = poly[index - 1][0]                  + ((third_first_x_dist / total_rate) *
+                                                                          first_second_vertex_distance)
+            point_of_bisector_y = poly[index - 1][1]                  + ((third_first_y_dist / total_rate) *
+                                                                          first_second_vertex_distance)
 
             if (point_of_bisector_x, point_of_bisector_y) == (poly[index][0], poly[index][1]):
                 new_point_x = poly[index][0] + 0.000000000000001
@@ -214,7 +210,6 @@ def buffered_point(poly_list, distance=100):
 
     return buff_vertices_l, buff_vertices_t
 
-
 def shapely_polygon(vertices):
 
     """
@@ -231,7 +226,6 @@ def shapely_polygon(vertices):
     for poly in vertices:
         poly_list.append(Polygon(poly))
     return poly_list
-
 
 def create_linestring(all_vertices):
 
