@@ -404,7 +404,7 @@ if __name__ == '__main__':
     # Create a graph from the weight matrix
     graph = create_graph_from_matrix(weight_matrix)
 
-    # Perform shortest path finding
+    # Perform the shortest path finding
     path = shortest_path(graph, 0, 1)
 
     # Get the coordinates of the shortest path and store them as a list
