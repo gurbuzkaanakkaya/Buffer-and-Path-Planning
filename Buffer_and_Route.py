@@ -265,7 +265,7 @@ def intersection(shapely_poly_list, all_vertices, linestring_wkt):
            None
     """
 
-    inf_value = 99999999
+    INF_VALUE = 99999999
     for line_str, wkt_index in linestring_wkt.items():
         line = wkt.loads(line_str)
         for polygon in shapely_poly_list:
@@ -292,8 +292,8 @@ def intersection(shapely_poly_list, all_vertices, linestring_wkt):
                     break
 
                 else:
-                    weight_matrix[wkt_index[0]][wkt_index[1]] = inf_value
-                    weight_matrix[wkt_index[1]][wkt_index[0]] = inf_value
+                    weight_matrix[wkt_index[0]][wkt_index[1]] = INF_VALUE
+                    weight_matrix[wkt_index[1]][wkt_index[0]] = INF_VALUE
                     break
 
             #  Alternative Solution  #
@@ -319,8 +319,8 @@ def intersection(shapely_poly_list, all_vertices, linestring_wkt):
             #        break
 
             else:
-                weight_matrix[wkt_index[0]][wkt_index[1]] = inf_value
-                weight_matrix[wkt_index[1]][wkt_index[0]] = inf_value
+                weight_matrix[wkt_index[0]][wkt_index[1]] = INF_VALUE
+                weight_matrix[wkt_index[1]][wkt_index[0]] = INF_VALUE
                 break
 
 
