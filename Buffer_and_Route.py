@@ -314,8 +314,8 @@ def intersection(shapely_poly_list, all_vertices, linestring_wkt):
             #        break
 
             #    else:
-            #        weight_matrix[wkt_index[0]][wkt_index[1]] = inf_value
-            #        weight_matrix[wkt_index[1]][wkt_index[0]] = inf_value
+            #        weight_matrix[wkt_index[0]][wkt_index[1]] = INF_VALUE
+            #        weight_matrix[wkt_index[1]][wkt_index[0]] = INF_VALUE
             #        break
 
             else:
