@@ -270,7 +270,6 @@ def intersection(shapely_poly_list, all_vertices, linestring_wkt):
         line = wkt.loads(line_str)
         for polygon in shapely_poly_list:
             intersect = polygon.intersection(line)
-            print(f'{intersect}  +  {wkt_index}')
 
             if intersect.is_empty or isinstance(intersect, (Point, MultiPoint)):
                 dist_points = haversine_distance(all_vertices[int(wkt_index[0])][0],
@@ -286,7 +285,7 @@ def intersection(shapely_poly_list, all_vertices, linestring_wkt):
                     center_x = (intersect.coords[0][0] + intersect.coords[1][0]) / 2
                     center_y = (intersect.coords[0][1] + intersect.coords[1][1]) / 2
                     distance = polygon.boundary.distance(Point(center_x, center_y))
-                    
+
                     if distance == 0:
                         dist_points = haversine_distance(all_vertices[int(wkt_index[0])][0],
                                                          all_vertices[int(wkt_index[0])][1],
@@ -294,14 +293,17 @@ def intersection(shapely_poly_list, all_vertices, linestring_wkt):
                                                          all_vertices[int(wkt_index[1])][1])
                         weight_matrix[wkt_index[0]][wkt_index[1]] = dist_points
                         weight_matrix[wkt_index[1]][wkt_index[0]] = dist_points
+                        weight_matrix[wkt_index[1]][wkt_index[0]] = dist_points
                         break
-                        
+
                     else:
                         weight_matrix[wkt_index[0]][wkt_index[1]] = INF_VALUE
                         weight_matrix[wkt_index[1]][wkt_index[0]] = INF_VALUE
                         break
-                        
-                elif wkt_index[0] + 1 == wkt_index[1]:
+
+                elif wkt_index[0] + 1 == wkt_index[1] \
+                        and (all_vertices[wkt_index[0]] in polygon.exterior.coords
+                             and all_vertices[wkt_index[1]] in polygon.exterior.coords):
                     dist_points = haversine_distance(all_vertices[int(wkt_index[0])][0],
                                                      all_vertices[int(wkt_index[0])][1],
                                                      all_vertices[int(wkt_index[1])][0],
