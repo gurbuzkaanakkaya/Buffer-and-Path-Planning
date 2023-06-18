@@ -5,6 +5,7 @@ import networkx as nx
 import geopandas as gpd
 import matplotlib.pyplot as plt
 from shapely import wkt
+from collections import deque
 from shapely.geometry import Polygon, Point, LineString, MultiPoint
 from concurrent.futures import ThreadPoolExecutor
 
@@ -137,7 +138,7 @@ def haversine_distance(latitude1, longitude1, latitude2, longitude2):
     distance = earth_radius * total_angle_of_the_circular_arc
     return distance
 
-def buffered_point(poly_list, distance=100):
+def buffered_point(poly_list, distance=1000):
 
     """
        Create a buffer around the points of a polygon.
@@ -153,57 +154,56 @@ def buffered_point(poly_list, distance=100):
 
     buff_vertices_l = []
     buff_vertices_t = []
-    poly_coord = []
     for poly in poly_list:
         size_of_list = len(poly)
-        for index in range(len(poly)):
-            control_vertices = [(poly[index - 1][0], poly[index - 1][1]), (poly[index][0], poly[index][1]),
+        poly_coord = deque()
+        for index, current_vertex in enumerate(poly):
+            control_vertices = [(poly[index - 1][0], poly[index - 1][1]), (current_vertex[0], current_vertex[1]),
                                 (poly[(index + 1) % size_of_list][0], poly[(index + 1) % size_of_list][1])]
 
-            first_second_vertex_distance  = haversine_distance(poly[index][0],
-                                                               poly[index][1],
+            first_second_vertex_distance  = haversine_distance(current_vertex[0],
+                                                               current_vertex[1],
                                                                poly[index - 1][0],
                                                                poly[index - 1][1])
-            second__third_vertex_distance = haversine_distance(poly[index][0],
-                                                               poly[index][1],
+            second__third_vertex_distance = haversine_distance(current_vertex[0],
+                                                               current_vertex[1],
                                                                poly[(index + 1) % size_of_list][0],
                                                                poly[(index + 1) % size_of_list][1])
 
-            third_first_x_dist  = poly[(index + 1) % size_of_list][0] - poly[index - 1][0]
-            third_first_y_dist  = poly[(index + 1) % size_of_list][1] - poly[index - 1][1]
+            third_first_x_dist = poly[(index + 1) % size_of_list][0] - poly[index - 1][0]
+            third_first_y_dist = poly[(index + 1) % size_of_list][1] - poly[index - 1][1]
 
-            total_rate          = first_second_vertex_distance        + second__third_vertex_distance
-       
-            point_of_bisector_x = poly[index - 1][0]                  + ((third_first_x_dist / total_rate) *
-                                                                          first_second_vertex_distance)
-            point_of_bisector_y = poly[index - 1][1]                  + ((third_first_y_dist / total_rate) *
-                                                                          first_second_vertex_distance)
+            total_rate = first_second_vertex_distance + second__third_vertex_distance
 
-            if (point_of_bisector_x, point_of_bisector_y) == (poly[index][0], poly[index][1]):
-                new_point_x = poly[index][0] + 0.000000000000001
-                poly[index] = (new_point_x, poly[index][1])
+            point_of_bisector_x = poly[index - 1][0] + ((third_first_x_dist / total_rate) *
+                                                        first_second_vertex_distance)
+            point_of_bisector_y = poly[index - 1][1] + ((third_first_y_dist / total_rate) *
+                                                        first_second_vertex_distance)
 
-            bisector_distance_vertex = haversine_distance(poly[index][0],
-                                                          poly[index][1],
+            if (point_of_bisector_x, point_of_bisector_y) == (current_vertex[0], current_vertex[1]):
+                new_point_x = current_vertex[0] + 0.000000000000001
+                current_vertex = (new_point_x, current_vertex[1])
+
+            bisector_distance_vertex = haversine_distance(current_vertex[0],
+                                                          current_vertex[1],
                                                           point_of_bisector_x,
                                                           point_of_bisector_y)
 
             if not is_vertex_convex(control_vertices, 1):
-                new_point_x = poly[index][0] + (poly[index][0] -
+                new_point_x = current_vertex[0] + (current_vertex[0] -
                                                 point_of_bisector_x) * distance / bisector_distance_vertex
-                new_point_y = poly[index][1] + (poly[index][1] -
+                new_point_y = current_vertex[1] + (current_vertex[1] -
                                                 point_of_bisector_y) * distance / bisector_distance_vertex
 
             else:
-                new_point_x = poly[index][0] - (poly[index][0] -
+                new_point_x = current_vertex[0] - (current_vertex[0] -
                                                 point_of_bisector_x) * distance / bisector_distance_vertex
-                new_point_y = poly[index][1] - (poly[index][1] -
+                new_point_y = current_vertex[1] - (current_vertex[1] -
                                                 point_of_bisector_y) * distance / bisector_distance_vertex
 
             poly_coord.append((new_point_x, new_point_y))
             buff_vertices_t.append((new_point_x, new_point_y))
         buff_vertices_l.append(poly_coord)
-        poly_coord = []
 
     return buff_vertices_l, buff_vertices_t
 
