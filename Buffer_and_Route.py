@@ -145,7 +145,7 @@ def buffered_point(poly_list, distance=1000):
 
        Args:
            poly_list (list): List of polygons, where each polygon is represented as a list of vertices.
-           distance (float): Distance of the buffer around the points (default: 100).
+           distance (float): Distance of the buffer around the points (default: 1000).
 
        Returns:
            buff_vertices_l (list): List of polygons with buffered points, where each polygon is represented as a list of vertices.
