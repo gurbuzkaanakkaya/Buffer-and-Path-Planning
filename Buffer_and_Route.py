@@ -239,10 +239,10 @@ def create_linestring(all_vertices):
 
     list_of_line = {}
     for index1 in range(len(all_vertices)):
-        start_point_coords = all_vertices[index1]
+        start_point_coord = all_vertices[index1]
         for index2 in range(index1 + 1, len(all_vertices)):
-            end_point_coords = all_vertices[index2]
-            linestring = LineString([start_point_coords, end_point_coords])
+            end_point_coord = all_vertices[index2]
+            linestring = LineString([start_point_coord, end_point_coord])
             list_of_line[linestring.wkt] = (index1, index2)
 
     return list_of_line
