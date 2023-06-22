@@ -390,14 +390,14 @@ if __name__ == '__main__':
     process_line(shapely_polygon_list, vertices_list_t, linestring_list)
 
     # Create a graph from the weight matrix
-    graph = create_graph_from_matrix(weight_matrix)
+    networkx_graph = create_graph_from_matrix(weight_matrix)
 
     # Perform the shortest path finding
-    path = shortest_path(graph, 0, 1)
+    short_path = shortest_path(networkx_graph, 0, 1)
 
     # Get the coordinates of the shortest path and store them as a list
     pd_path_coord = []
-    for vertex in path:
+    for vertex in short_path:
         pd_path_coord.append(vertices_list_t[vertex])
 
     # Create the LineString object for the shortest path
