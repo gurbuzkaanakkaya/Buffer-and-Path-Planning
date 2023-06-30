@@ -165,7 +165,7 @@ def buffered_point(poly_list, distance=1000):
                                                                current_vertex[1],
                                                                poly[index - 1][0],
                                                                poly[index - 1][1])
-            second__third_vertex_distance = haversine_distance(current_vertex[0],
+            second_third_vertex_distance = haversine_distance(current_vertex[0],
                                                                current_vertex[1],
                                                                poly[(index + 1) % size_of_list][0],
                                                                poly[(index + 1) % size_of_list][1])
@@ -173,7 +173,7 @@ def buffered_point(poly_list, distance=1000):
             third_first_x_dist = poly[(index + 1) % size_of_list][0] - poly[index - 1][0]
             third_first_y_dist = poly[(index + 1) % size_of_list][1] - poly[index - 1][1]
 
-            total_rate = first_second_vertex_distance + second__third_vertex_distance
+            total_rate = first_second_vertex_distance + second_third_vertex_distance
 
             point_of_bisector_x = poly[index - 1][0] + ((third_first_x_dist / total_rate) *
                                                         first_second_vertex_distance)
