@@ -91,17 +91,17 @@ def is_vertex_convex(vertices, vertex_index):
             is_convex (bool): True if the vertex is convex, False otherwise.
     """
     
-    size_of_list = len(vertices)
+    size_of_list   = len(vertices)
 
     previous_index = (vertex_index - 1) % size_of_list
-    next_index = (vertex_index + 1) % size_of_list
+    next_index     = (vertex_index + 1) % size_of_list
 
     coordinate_x1, coordinate_y1 = vertices[previous_index]
     coordinate_x2, coordinate_y2 = vertices[vertex_index]
     coordinate_x3, coordinate_y3 = vertices[next_index]
 
-    cross_product = (coordinate_x2 - coordinate_x1) * (coordinate_y3 - coordinate_y2) - \
-                    (coordinate_y2 - coordinate_y1) * (coordinate_x3 - coordinate_x2)
+    cross_product  = (coordinate_x2 - coordinate_x1) * (coordinate_y3 - coordinate_y2) - \
+                     (coordinate_y2 - coordinate_y1) * (coordinate_x3 - coordinate_x2)
 
     return cross_product > 0
 
@@ -111,9 +111,9 @@ def haversine_distance(latitude1, longitude1, latitude2, longitude2):
         Calculate the haversine distance between two sets of latitude and longitude coordinates.
 
         Args:
-            latitude1 (float): Latitude of the first point.
+            latitude1 (float) : Latitude of the first point.
             longitude1 (float): Longitude of the first point.
-            latitude2 (float): Latitude of the second point.
+            latitude2 (float) : Latitude of the second point.
             longitude2 (float): Longitude of the second point.
 
         Returns:
@@ -122,16 +122,16 @@ def haversine_distance(latitude1, longitude1, latitude2, longitude2):
 
     earth_radius = 6371000
 
-    latitude1_radian = math.radians(latitude1)
+    latitude1_radian  = math.radians(latitude1)
     longitude1_radian = math.radians(longitude1)
-    latitude2_radian = math.radians(latitude2)
+    latitude2_radian  = math.radians(latitude2)
     longitude2_radian = math.radians(longitude2)
 
-    delta_lat = latitude2_radian - latitude1_radian
+    delta_lat = latitude2_radian  - latitude1_radian
     delta_lon = longitude2_radian - longitude1_radian
 
-    center_angle_of_circle_arc = math.sin(delta_lat / 2) ** 2 + math.cos(latitude1_radian) * \
-                                 math.cos(latitude2_radian) * math.sin(delta_lon / 2) ** 2
+    center_angle_of_circle_arc      = math.sin(delta_lat / 2) ** 2 + math.cos(latitude1_radian) * \
+                                      math.cos(latitude2_radian) * math.sin(delta_lon / 2) ** 2
     total_angle_of_the_circular_arc = 2 * math.atan2(math.sqrt(center_angle_of_circle_arc),
                                                      math.sqrt(1 - center_angle_of_circle_arc))
 
@@ -241,8 +241,8 @@ def create_linestring(all_vertices):
     for index1 in range(len(all_vertices)):
         start_point_coord = all_vertices[index1]
         for index2 in range(index1 + 1, len(all_vertices)):
-            end_point_coord = all_vertices[index2]
-            linestring = LineString([start_point_coord, end_point_coord])
+            end_point_coord              = all_vertices[index2]
+            linestring                   = LineString([start_point_coord, end_point_coord])
             list_of_line[linestring.wkt] = (index1, index2)
 
     return list_of_line
@@ -338,7 +338,7 @@ def process_line(shapely_poly_list, all_vertices, linestring_wkt):
     """
 
     half_length = len(linestring_wkt) // 2
-    first_half = dict(list(linestring_wkt.items())[:half_length])
+    first_half  = dict(list(linestring_wkt.items())[:half_length])
     second_half = dict(list(linestring_wkt.items())[half_length:])
 
     with ThreadPoolExecutor() as executor:
