@@ -288,6 +288,7 @@ def intersection(shapely_poly_list, all_vertices, linestring_wkt):
                                                          all_vertices[int(wkt_index[0])][1],
                                                          all_vertices[int(wkt_index[1])][0],
                                                          all_vertices[int(wkt_index[1])][1])
+                        
                         weight_matrix[wkt_index[0]][wkt_index[1]] = dist_points
                         weight_matrix[wkt_index[1]][wkt_index[0]] = dist_points
                         weight_matrix[wkt_index[1]][wkt_index[0]] = dist_points
