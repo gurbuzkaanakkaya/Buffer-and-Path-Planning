@@ -165,6 +165,7 @@ def buffered_point(poly_list, distance=1000):
                                                                current_vertex[1],
                                                                poly[index - 1][0],
                                                                poly[index - 1][1])
+            
             second_third_vertex_distance = haversine_distance(current_vertex[0],
                                                                current_vertex[1],
                                                                poly[(index + 1) % size_of_list][0],
