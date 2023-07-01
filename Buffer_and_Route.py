@@ -350,14 +350,14 @@ def process_line(shapely_poly_list, all_vertices, linestring_wkt):
 if __name__ == '__main__':
     # Define lists to store coordinate and polygon information
     coordinate_list = []
-    polygon_list = []
+    polygon_list    = []
 
     # Read the 'Coordinates' file
     with open('Coordinates', 'r') as file:
         coordinate_info = file.readlines()
         data = [line.strip().split(',') for line in coordinate_info]
 
-    temp_list = []
+    temp_list           = []
     polygon_start_index = 2
 
     # Process the data and add coordinates to the coordinate_list and polygons to the polygon_list
