@@ -1,4 +1,5 @@
-# Buffer-and-Path-Planning
+
+# Polygon and Path Planning
 • First, we import the required libraries and functions.
 
 • The create_matrix function creates a weight matrix based on a list of coordinates. It determines the dimensions of the matrix and the maximum element width.
