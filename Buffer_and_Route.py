@@ -23,12 +23,22 @@ class MatplotlibWidget(QWidget):
         self.setLayout(self.layout)
 
     def plot(self, data):
+        """
+        Plot the GeoDataFrame data on the MatplotlibWidget.
+
+        Args:
+            data (geopandas.GeoDataFrame): The GeoDataFrame containing geometries to be plotted.
+
+        Returns:
+            None
+        """
         self.figure.clear()  # Clear previous plot
         ax = self.figure.add_subplot(111)
         data[data.geometry.type == 'Polygon'].plot(ax=ax, color='lightblue', edgecolor='black')
         data[data.geometry.type == 'LineString'].plot(ax=ax, color='red')
         data[data.geometry.type == 'Point'].plot(ax=ax, color='green')
         self.canvas.draw()
+
 
 class MyMainWindow(QMainWindow):
     def __init__(self):
@@ -39,6 +49,12 @@ class MyMainWindow(QMainWindow):
         self.ui.pushButton.clicked.connect(self.show_plot)
 
     def show_plot(self):
+        """
+        Create a visual_data GeoDataFrame and pass it to the MatplotlibWidget for plotting.
+
+        Returns:
+            None
+        """
         visual_data = gpd.GeoDataFrame(
             geometry=[polygon for polygon in shapely_polygon_list] + [line] + [point for point in start_target_point])
         self.matplotlib_widget.plot(visual_data)
@@ -258,9 +274,24 @@ def shapely_polygon(vertices):
     return poly_list
 
 def get_start_target_buffer_points(poly_list, all_vertices):
+    """
+        Get the list of points including the start point, target point, and buffered polygon points.
+
+        Args:
+            poly_list (list): A list containing the buffered polygon points.
+            all_vertices (list): A list containing all points.
+
+        Returns:
+            points_list (list): A new list containing the start point, target point, and buffered polygon points.
+    """
+
+    # Make a copy of the poly_list to avoid modifying the original list.
     points_list = poly_list[:]
+    # Insert the start point at the beginning of the list.
     points_list.insert(0, all_vertices[0])
+    # Insert the target point after the start point.
     points_list.insert(1, all_vertices[1])
+    # Return the list containing the start, target, and buffered polygon points.
     return points_list
 
 def create_linestring(all_vertices):
