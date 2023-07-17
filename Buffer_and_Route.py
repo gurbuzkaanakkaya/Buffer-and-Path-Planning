@@ -4,13 +4,46 @@ import numpy as np
 import networkx as nx
 import geopandas as gpd
 import matplotlib.pyplot as plt
+import time
 from shapely import wkt
 from collections import deque
 from shapely.geometry import Polygon, Point, LineString, MultiPoint
 from concurrent.futures import ThreadPoolExecutor
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from PyQt5 import uic
+
+class MatplotlibWidget(QWidget):
+    def __init__(self, parent=None):
+        super(MatplotlibWidget, self).__init__(parent)
+        self.figure = plt.figure()
+        self.canvas = FigureCanvas(self.figure)
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.canvas)
+        self.setLayout(self.layout)
+
+    def plot(self, data):
+        self.figure.clear()  # Clear previous plot
+        ax = self.figure.add_subplot(111)
+        data[data.geometry.type == 'Polygon'].plot(ax=ax, color='lightblue', edgecolor='black')
+        data[data.geometry.type == 'LineString'].plot(ax=ax, color='red')
+        data[data.geometry.type == 'Point'].plot(ax=ax, color='green')
+        self.canvas.draw()
+
+class MyMainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.ui = uic.loadUi("buffer_route.ui", self)
+        self.matplotlib_widget = MatplotlibWidget(self.ui.MatplotlibWidget)
+        self.ui.gridLayout.addWidget(self.matplotlib_widget, 0, 0, 1, 1)
+        self.ui.pushButton.clicked.connect(self.show_plot)
+
+    def show_plot(self):
+        visual_data = gpd.GeoDataFrame(
+            geometry=[polygon for polygon in shapely_polygon_list] + [line] + [point for point in start_target_point])
+        self.matplotlib_widget.plot(visual_data)
 
 def create_matrix(coordinates):
-
     """
        Create a matrix from a given list of coordinates.
 
@@ -21,16 +54,16 @@ def create_matrix(coordinates):
            matrix (numpy array): Matrix representation of the coordinates.
            max_element_width (int): Width of the maximum element in the matrix.
     """
-    
-    row_count         = len(coordinates)
-    column_count      = len(coordinates)
-    matrix            = np.array([[0 for _ in range(column_count)] for _ in range(row_count)])
+
+    row_count = len(coordinates)
+    column_count = len(coordinates)
+    matrix = np.array([[0 for _ in range(column_count)] for _ in range(row_count)])
     max_element_width = len(str(np.max(matrix)))
 
     return matrix, max_element_width
 
-def create_graph_from_matrix(matrix):
 
+def create_graph_from_matrix(matrix):
     """
         Creates a graph from a given matrix representation.
 
@@ -40,7 +73,7 @@ def create_graph_from_matrix(matrix):
         Returns:
             graph: A NetworkX graph object with nodes and weighted edges.
     """
-    
+
     num_vertices = len(matrix)
     graph = nx.Graph()
     graph.add_nodes_from(range(num_vertices))
@@ -53,8 +86,8 @@ def create_graph_from_matrix(matrix):
 
     return graph
 
-def shortest_path(graph, source, target):
 
+def shortest_path(graph, source, target):
     """
         Find the shortest path between two nodes in a graph using Dijkstra's algorithm.
 
@@ -66,20 +99,19 @@ def shortest_path(graph, source, target):
         Returns:
             path: A list representing the shortest path from the source to the target.
     """
-    
+
     path = nx.dijkstra_path(graph, source, target)
 
     return path
 
-def show_matrix(matrix, element_with):
 
+def show_matrix(matrix, element_with):
     # Print the matrix with proper alignment of elements.
     for row in matrix:
         row_str = ' '.join(str(element).rjust(element_with) for element in row)
         print(row_str)
 
 def is_vertex_convex(vertices, vertex_index):
-
     """
         Check if a vertex in a list of vertices is convex.
 
@@ -90,23 +122,23 @@ def is_vertex_convex(vertices, vertex_index):
         Returns:
             is_convex (bool): True if the vertex is convex, False otherwise.
     """
-    
-    size_of_list   = len(vertices)
+
+    size_of_list = len(vertices)
 
     previous_index = (vertex_index - 1) % size_of_list
-    next_index     = (vertex_index + 1) % size_of_list
+    next_index = (vertex_index + 1) % size_of_list
 
     coordinate_x1, coordinate_y1 = vertices[previous_index]
     coordinate_x2, coordinate_y2 = vertices[vertex_index]
     coordinate_x3, coordinate_y3 = vertices[next_index]
 
-    cross_product  = (coordinate_x2 - coordinate_x1) * (coordinate_y3 - coordinate_y2) - \
-                     (coordinate_y2 - coordinate_y1) * (coordinate_x3 - coordinate_x2)
+    cross_product = (coordinate_x2 - coordinate_x1) * (coordinate_y3 - coordinate_y2) - \
+                    (coordinate_y2 - coordinate_y1) * (coordinate_x3 - coordinate_x2)
 
     return cross_product > 0
 
-def haversine_distance(latitude1, longitude1, latitude2, longitude2):
 
+def haversine_distance(latitude1, longitude1, latitude2, longitude2):
     """
         Calculate the haversine distance between two sets of latitude and longitude coordinates.
 
@@ -122,24 +154,24 @@ def haversine_distance(latitude1, longitude1, latitude2, longitude2):
 
     earth_radius = 6371000
 
-    latitude1_radian  = math.radians(latitude1)
+    latitude1_radian = math.radians(latitude1)
     longitude1_radian = math.radians(longitude1)
-    latitude2_radian  = math.radians(latitude2)
+    latitude2_radian = math.radians(latitude2)
     longitude2_radian = math.radians(longitude2)
 
-    delta_lat = latitude2_radian  - latitude1_radian
+    delta_lat = latitude2_radian - latitude1_radian
     delta_lon = longitude2_radian - longitude1_radian
 
-    center_angle_of_circle_arc      = math.sin(delta_lat / 2) ** 2 + math.cos(latitude1_radian) * \
-                                      math.cos(latitude2_radian) * math.sin(delta_lon / 2) ** 2
+    center_angle_of_circle_arc = math.sin(delta_lat / 2) ** 2 + math.cos(latitude1_radian) * \
+                                 math.cos(latitude2_radian) * math.sin(delta_lon / 2) ** 2
     total_angle_of_the_circular_arc = 2 * math.atan2(math.sqrt(center_angle_of_circle_arc),
                                                      math.sqrt(1 - center_angle_of_circle_arc))
 
     distance = earth_radius * total_angle_of_the_circular_arc
     return distance
 
-def buffered_point(poly_list, distance=1000):
 
+def buffered_point(poly_list, distance=1000):
     """
        Create a buffer around the points of a polygon.
 
@@ -161,15 +193,15 @@ def buffered_point(poly_list, distance=1000):
             control_vertices = [(poly[index - 1][0], poly[index - 1][1]), (current_vertex[0], current_vertex[1]),
                                 (poly[(index + 1) % size_of_list][0], poly[(index + 1) % size_of_list][1])]
 
-            first_second_vertex_distance  = haversine_distance(current_vertex[0],
-                                                               current_vertex[1],
-                                                               poly[index - 1][0],
-                                                               poly[index - 1][1])
-            
+            first_second_vertex_distance = haversine_distance(current_vertex[0],
+                                                              current_vertex[1],
+                                                              poly[index - 1][0],
+                                                              poly[index - 1][1])
+
             second_third_vertex_distance = haversine_distance(current_vertex[0],
-                                                               current_vertex[1],
-                                                               poly[(index + 1) % size_of_list][0],
-                                                               poly[(index + 1) % size_of_list][1])
+                                                              current_vertex[1],
+                                                              poly[(index + 1) % size_of_list][0],
+                                                              poly[(index + 1) % size_of_list][1])
 
             third_first_x_dist = poly[(index + 1) % size_of_list][0] - poly[index - 1][0]
             third_first_y_dist = poly[(index + 1) % size_of_list][1] - poly[index - 1][1]
@@ -192,15 +224,15 @@ def buffered_point(poly_list, distance=1000):
 
             if not is_vertex_convex(control_vertices, 1):
                 new_point_x = current_vertex[0] + (current_vertex[0] -
-                                                point_of_bisector_x) * distance / bisector_distance_vertex
+                                                   point_of_bisector_x) * distance / bisector_distance_vertex
                 new_point_y = current_vertex[1] + (current_vertex[1] -
-                                                point_of_bisector_y) * distance / bisector_distance_vertex
+                                                   point_of_bisector_y) * distance / bisector_distance_vertex
 
             else:
                 new_point_x = current_vertex[0] - (current_vertex[0] -
-                                                point_of_bisector_x) * distance / bisector_distance_vertex
+                                                   point_of_bisector_x) * distance / bisector_distance_vertex
                 new_point_y = current_vertex[1] - (current_vertex[1] -
-                                                point_of_bisector_y) * distance / bisector_distance_vertex
+                                                   point_of_bisector_y) * distance / bisector_distance_vertex
 
             poly_coord.append((new_point_x, new_point_y))
             buff_vertices_t.append((new_point_x, new_point_y))
@@ -208,8 +240,8 @@ def buffered_point(poly_list, distance=1000):
 
     return buff_vertices_l, buff_vertices_t
 
-def shapely_polygon(vertices):
 
+def shapely_polygon(vertices):
     """
         Create polygons using the Polygon class from the Shapely library.
 
@@ -219,14 +251,14 @@ def shapely_polygon(vertices):
         Returns:
             poly_list (list): A list containing the polygons, where each polygon is represented using Shapely's Polygon class.
     """
-    
+
     poly_list = []
     for poly in vertices:
         poly_list.append(Polygon(poly))
     return poly_list
 
-def create_linestring(all_vertices):
 
+def create_linestring(all_vertices):
     """
         Create LineString objects between all pairs of vertices.
 
@@ -242,14 +274,14 @@ def create_linestring(all_vertices):
     for index1 in range(len(all_vertices)):
         start_point_coord = all_vertices[index1]
         for index2 in range(index1 + 1, len(all_vertices)):
-            end_point_coord              = all_vertices[index2]
-            linestring                   = LineString([start_point_coord, end_point_coord])
+            end_point_coord = all_vertices[index2]
+            linestring = LineString([start_point_coord, end_point_coord])
             list_of_line[linestring.wkt] = (index1, index2)
 
     return list_of_line
 
-def intersection(shapely_poly_list, all_vertices, linestring_wkt):
 
+def intersection(shapely_poly_list, all_vertices, linestring_wkt):
     """
        Checks the intersections between polygons and LineString objects and updates the weight matrix.
 
@@ -289,7 +321,7 @@ def intersection(shapely_poly_list, all_vertices, linestring_wkt):
                                                          all_vertices[int(wkt_index[0])][1],
                                                          all_vertices[int(wkt_index[1])][0],
                                                          all_vertices[int(wkt_index[1])][1])
-                        
+
                         weight_matrix[wkt_index[0]][wkt_index[1]] = dist_points
                         weight_matrix[wkt_index[1]][wkt_index[0]] = dist_points
                         weight_matrix[wkt_index[1]][wkt_index[0]] = dist_points
@@ -324,7 +356,6 @@ def intersection(shapely_poly_list, all_vertices, linestring_wkt):
 
 
 def process_line(shapely_poly_list, all_vertices, linestring_wkt):
-
     """
        Process the line by splitting it into two halves and running intersection calculations in parallel.
 
@@ -339,7 +370,7 @@ def process_line(shapely_poly_list, all_vertices, linestring_wkt):
     """
 
     half_length = len(linestring_wkt) // 2
-    first_half  = dict(list(linestring_wkt.items())[:half_length])
+    first_half = dict(list(linestring_wkt.items())[:half_length])
     second_half = dict(list(linestring_wkt.items())[half_length:])
 
     with ThreadPoolExecutor() as executor:
@@ -348,16 +379,19 @@ def process_line(shapely_poly_list, all_vertices, linestring_wkt):
 
 
 if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = MyMainWindow()
+
     # Define lists to store coordinate and polygon information
     coordinate_list = []
-    polygon_list    = []
+    polygon_list = []
 
     # Read the 'Coordinates' file
     with open('Coordinates', 'r') as file:
         coordinate_info = file.readlines()
         data = [line.strip().split(',') for line in coordinate_info]
 
-    temp_list           = []
+    temp_list = []
     polygon_start_index = 2
 
     # Process the data and add coordinates to the coordinate_list and polygons to the polygon_list
@@ -385,11 +419,15 @@ if __name__ == '__main__':
     # Create Shapely Polygon objects
     shapely_polygon_list = shapely_polygon(vertices_list)
 
+    start_time = time.time()
     # Create LineString objects and store them as a dictionary with the vertex indices
     linestring_list = create_linestring(vertices_list_t)
-
+    #print(len(linestring_list))
     # Perform intersection operations in parallel
     process_line(shapely_polygon_list, vertices_list_t, linestring_list)
+    end_time = time.time()
+    ex_time = end_time - start_time
+    print(ex_time)
 
     # Create a graph from the weight matrix
     networkx_graph = create_graph_from_matrix(weight_matrix)
@@ -408,18 +446,9 @@ if __name__ == '__main__':
     # Create Point objects for the start and target points
     start_target_point = [Point(vertices_list_t[0]), Point(vertices_list_t[1])]
 
-    # Create a GeoDataFrame with the data
-    data = gpd.GeoDataFrame(
-        geometry=[polygon for polygon in shapely_polygon_list] + [line] + [point for point in start_target_point])
-
-    # Create a plot and display the data
-    fig, ax = plt.subplots()
-    data[data.geometry.type == 'Polygon'].plot(ax=ax, color='lightblue', edgecolor='black')
-    data[data.geometry.type == 'LineString'].plot(ax=ax, color='red')
-    data[data.geometry.type == 'Point'].plot(ax=ax, color='green')
-    plt.show()
-
+    window.show()
+    sys.exit(app.exec_())
     # Uncomment the following lines if needed to display the matrix size and other output
-    
+
     # print(f"{len(shapely_polygon_list)} polygons, {len(vertices_list_t)} points")
     # show_matrix(weight_matrix, max_width)
