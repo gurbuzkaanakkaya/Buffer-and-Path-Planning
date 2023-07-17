@@ -170,9 +170,9 @@ def haversine_distance(latitude1, longitude1, latitude2, longitude2):
 
     earth_radius = 6371000
 
-    latitude1_radian = math.radians(latitude1)
+    latitude1_radian  = math.radians(latitude1)
     longitude1_radian = math.radians(longitude1)
-    latitude2_radian = math.radians(latitude2)
+    latitude2_radian  = math.radians(latitude2)
     longitude2_radian = math.radians(longitude2)
 
     delta_lat = latitude2_radian - latitude1_radian
