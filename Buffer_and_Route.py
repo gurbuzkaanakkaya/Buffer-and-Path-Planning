@@ -257,6 +257,11 @@ def shapely_polygon(vertices):
         poly_list.append(Polygon(poly))
     return poly_list
 
+def get_start_target_buffer_points(poly_list, all_vertices):
+    points_list = poly_list[:]
+    points_list.insert(0, all_vertices[0])
+    points_list.insert(1, all_vertices[1])
+    return points_list
 
 def create_linestring(all_vertices):
     """
@@ -413,18 +418,17 @@ if __name__ == '__main__':
 
     # Buffer the points to create new vertices lists
     vertices_list, vertices_list_t = buffered_point(polygon_list)
-    vertices_list_t.insert(0, coordinate_list[0])
-    vertices_list_t.insert(1, coordinate_list[1])
+    start_target_buffer_points_list = get_start_target_buffer_points(vertices_list_t, coordinate_list)
 
     # Create Shapely Polygon objects
     shapely_polygon_list = shapely_polygon(vertices_list)
 
     start_time = time.time()
     # Create LineString objects and store them as a dictionary with the vertex indices
-    linestring_list = create_linestring(vertices_list_t)
+    linestring_list = create_linestring(start_target_buffer_points_list)
     #print(len(linestring_list))
     # Perform intersection operations in parallel
-    process_line(shapely_polygon_list, vertices_list_t, linestring_list)
+    process_line(shapely_polygon_list, start_target_buffer_points_list, linestring_list)
     end_time = time.time()
     ex_time = end_time - start_time
     print(ex_time)
@@ -438,13 +442,13 @@ if __name__ == '__main__':
     # Get the coordinates of the shortest path and store them as a list
     pd_path_coord = []
     for vertex in short_path:
-        pd_path_coord.append(vertices_list_t[vertex])
+        pd_path_coord.append(start_target_buffer_points_list[vertex])
 
     # Create the LineString object for the shortest path
     line = LineString(pd_path_coord)
 
     # Create Point objects for the start and target points
-    start_target_point = [Point(vertices_list_t[0]), Point(vertices_list_t[1])]
+    start_target_point = [Point(start_target_buffer_points_list[0]), Point(start_target_buffer_points_list[1])]
 
     window.show()
     sys.exit(app.exec_())
