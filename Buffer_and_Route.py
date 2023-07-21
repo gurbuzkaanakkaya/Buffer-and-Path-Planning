@@ -422,27 +422,30 @@ if __name__ == '__main__':
     coordinate_list = []
     polygon_list = []
 
-    # Read the 'Coordinates' file
-    with open('Coordinates', 'r') as file:
-        coordinate_info = file.readlines()
-        data = [line.strip().split(',') for line in coordinate_info]
+    try:
+        # Read the 'Coordinates' file
+        with open('Coordinates', 'r') as file:
+            coordinate_info = file.readlines()
+            data = [line.strip().split(',') for line in coordinate_info]
 
-    temp_list = []
-    polygon_start_index = 2
+        temp_list = []
+        polygon_start_index = 2
 
-    # Process the data and add coordinates to the coordinate_list and polygons to the polygon_list
-    for coordinate in data:
-        if float(coordinate[0]) == 0:
-            polygon_list.append(temp_list)
-            temp_list = []
-        else:
-            x_coordinate = float(coordinate[0])
-            y_coordinate = float(coordinate[1])
-            coordinate_list.append((x_coordinate, y_coordinate))
-            if polygon_start_index > 0:
-                polygon_start_index -= 1
+        # Process the data and add coordinates to the coordinate_list and polygons to the polygon_list
+        for coordinate in data:
+            if float(coordinate[0]) == 0:
+                polygon_list.append(temp_list)
+                temp_list = []
             else:
-                temp_list.append((x_coordinate, y_coordinate))
+                x_coordinate = float(coordinate[0])
+                y_coordinate = float(coordinate[1])
+                coordinate_list.append((x_coordinate, y_coordinate))
+                if polygon_start_index > 0:
+                    polygon_start_index -= 1
+                else:
+                    temp_list.append((x_coordinate, y_coordinate))
+    except IOError as e:
+        print("File read error: ", str(e))
 
     # Create the weight matrix and determine the maximum width
     weight_matrix, max_width = create_matrix(coordinate_list)
@@ -469,7 +472,7 @@ if __name__ == '__main__':
 
     # Perform the shortest path finding
     short_path = shortest_path(networkx_graph, 0, 1)
-
+    print(short_path)
     # Get the coordinates of the shortest path and store them as a list
     pd_path_coord = []
     for vertex in short_path:
