@@ -40,7 +40,7 @@ class MatplotlibWidget(QWidget):
         self.canvas.draw()
 
 
-class MyMainWindow(QMainWindow):
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.ui = uic.loadUi("buffer_route.ui", self)
@@ -416,7 +416,7 @@ def process_line(shapely_poly_list, all_vertices, linestring_wkt):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = MyMainWindow()
+    window = MainWindow()
 
     # Define lists to store coordinate and polygon information
     coordinate_list = []
