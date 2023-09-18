@@ -360,7 +360,6 @@ def intersection(shapely_poly_list, all_vertices, linestring_wkt):
 
                         weight_matrix[wkt_index[0]][wkt_index[1]] = dist_points
                         weight_matrix[wkt_index[1]][wkt_index[0]] = dist_points
-                        weight_matrix[wkt_index[1]][wkt_index[0]] = dist_points
                         break
 
                     else:
